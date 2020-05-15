@@ -66,6 +66,7 @@
 </template>
 <script>
 import newArr from "./time";
+import Bus from './eventBus'
 export default {
   data() {
     return {
@@ -104,7 +105,6 @@ export default {
       this.getHotelOrders();
     }, 2000);
     this.getHotelMsgs(this.status);
-
     this.timer2 = setInterval(() => {
       setTimeout(() => {
         this.getHotelExceptionMsgs(this.status);
@@ -177,7 +177,7 @@ export default {
     getHotelMsgs(status) {
       this.$api
         .getHotelMsgs({
-          hotelId: '907003670336145664',
+          hotelId: sessionStorage.getItem("hotelId"),
           status: status,
           pageNo: this.pageNo,
           pageSize: this.pageSize
@@ -190,6 +190,7 @@ export default {
             this.list = [...this.list, ...this.childList];
             var list = this.list.filter(item => item.name);
             this.list = list;
+            
             this.waitCount = this.list[0].waitCount;
             this.doneCount = this.list[0].doneCount;
             // if (this.childList.length < 3) {

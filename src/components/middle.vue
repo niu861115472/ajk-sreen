@@ -25,6 +25,13 @@
                 <li v-for="(item,index) in list" :key="index" :class="{'current':item.hostStatus == '主机离线'}">
                     <p>{{item.name}}</p>
                     <!-- <p style="color:#db161d;fontWeight:550">{{item.msg}}</p> -->
+                    <div class="tip_img">
+                        <img v-if="item.msg" src="../assets/images/未处理.png" alt="">
+                        <img v-if="false" src="../assets/images/插头.png" alt="">
+                        <img v-if="false" src="../assets/images/电池.png" alt="">
+                        <img v-if="(item.msg.indexOf('清理')) > -1" src="../assets/images/扫把.png" alt="">
+                        <img v-if="false" src="../assets/images/异常.png" alt="">
+                    </div>
                     <p>{{item.hostStatus.replace(/－/g,'')}}</p>
                 </li>
             </ul>
@@ -46,7 +53,8 @@ export default {
             show:true,
             customerNum:[],
             list:[],
-            msgList:[]
+            msgList:[],
+            arr:[]
         }
     },
     mounted() {
@@ -72,7 +80,7 @@ export default {
                 status:0
             }).then(res=>{
                 this.msgList = res.dataObject
-                // sessionStorage.setItem('deviceId',res.dataObject[0].deviceId)
+                
                 arr.forEach(item =>{
                     item.msg = ''
                     this.msgList.forEach(val =>{
@@ -189,7 +197,8 @@ export default {
         flex-wrap: wrap
     }
     .list ul li{
-        width: 45px;
+        position: relative;
+        width: 47px;
         height: 50px;
         text-align: center;
         margin: 8px;
@@ -197,7 +206,7 @@ export default {
         background-size: 100% 100%;
     }
     .list ul li.current{
-        width: 45px;
+        width: 47px;
         height: 50px;
         text-align: center;
         margin: 8px;
@@ -215,6 +224,17 @@ export default {
     }
     .list ul li p:nth-of-type(3){
         font-size: 5px;
+    }
+    .list ul li .tip_img{
+        position: absolute;
+        left: 5px;
+        display: flex;
+        width: 7.5px;
+        /* right: 6px; */
+        bottom: 7px;
+    }
+    .list ul li .tip_img img{
+        width: 100%;
     }
     .loading{
         width: 35px;

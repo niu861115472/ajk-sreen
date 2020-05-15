@@ -1,8 +1,8 @@
 import axios from 'axios'
 import qs from 'qs'                                                                                                                                                                                                                                                                          
 
-var base_url = 'http://www.live-ctrl.com/'
-var base_url1 = 'http://www.live-ctrl.com/'
+var base_url = 'http://demo.live-ctrl.com/'
+var base_url1 = 'http://demo.live-ctrl.com/'
 var base_url2 = 'http://api.web.haier.qingdao.cosmoplat.com/'
 // var base_url = 'http://192.168.0.84:8888/aijukex'
 const base_axios_options = {
@@ -51,17 +51,18 @@ export const Api = {
   getHotelPowerRank:(params) =>{
     return postAxios.post('aijukex/hm/hm_htHotelPowerRank?'+`token=${token}&`+qs.stringify(params)).then(res=>res.data);
   },
-  //用电报警
+  //用电报警接口
   getHotelPowerWarnMsg:(params) =>{
     return postAxios.post('aijukex/hm/hm_htHotelPowerWarnMsg?'+`token=${token}&`+qs.stringify(params)).then(res=>res.data);
   },
-  //用电报警已处理/未处理
+  //用电报警已处理/未处理数量
   getHotelPowerWarnCount:(params) =>{
     return postAxios.post('aijukex/hm/hm_htHotelPowerWarnCount?'+`token=${token}&`+qs.stringify(params)).then(res=>res.data);
   },
   postOpenDoor:(params) =>{
     return postAxios.get('snbface/openDoor?'+qs.stringify(params)).then(res =>res.data)
   },
+  //获取房间设备功率、线温接口
   getRealTimeData:(params) =>{
     return postAxios1.get('aijukex/tenement/queryLineModels?'+qs.stringify(params)).then(res =>res.data)
   }

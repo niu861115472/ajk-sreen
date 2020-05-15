@@ -18,6 +18,7 @@ import Left from "./left";
 import Right from "./right";
 import utils from './utils'
 import UploadPhoto from './uploadPhoto'
+import Bus from "./eventBus.js";
 
 export default {
   components: {
@@ -33,7 +34,7 @@ export default {
     };
   },
   created() {
-    let sign = utils.getUrlKey('sign');
+    let sign = utils.getUrlKey('sign') == 'anasu' ? 'tongbu' : utils.getUrlKey('sign');
     sessionStorage.setItem('sign',sign);
     this.getHotelBySign()
     console.log(sign)
@@ -78,7 +79,8 @@ export default {
   },
   methods: {
     backStage(){
-      window.location.href = 'http://www.live-ctrl.com/aijukex/tenement/mainPage'
+      let name = utils.getUrlKey('sign') == 'anasu' ? 'anasu' : 'aijukex'
+      window.location.href = `http://demo.live-ctrl.com/${name}/tenement/mainPage`
     },
     //根据标识获取酒店信息
     getHotelBySign(){
@@ -87,7 +89,8 @@ export default {
       })
       .then(res =>{
         if(res.success){
-          this.name = res.dataObject.name
+          this.name = utils.getUrlKey('sign') == 'anasu' ? '安纳舒智慧酒店' : res.dataObject.name
+          Bus.$emit('getHotelName',res.dataObject.name)
         }     
       })
     },

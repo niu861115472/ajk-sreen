@@ -68,9 +68,9 @@
       time1 = [today3,today2,today1]
       realTime = [today6,today5,today4,today3,today2,today1,today]
       houseArr = [
-        {date:newToday3,homes:[],power:['0','0','0']},
-        {date:newToday2,homes:[],power:['0','0','0']},
-        {date:newToday1,homes:[],power:['0','0','0']}
+        {date:newToday3,homes:[],power:['0','0','0'],arr:[]},
+        {date:newToday2,homes:[],power:['0','0','0'],arr:[]},
+        {date:newToday1,homes:[],power:['0','0','0'],arr:[]}
       ]
       dataArr = [
         {totalPower:'0',date:newToday6},

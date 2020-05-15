@@ -1,7 +1,7 @@
 <template>
   <div class="left">
     <div class="same_bg1">
-      <p class="left_name">爱居客为您提供酒店一站式服务>></p>
+      <p class="left_name">{{ sign == 'anasu' ? '安纳舒' : name}}为您提供酒店一站式服务>></p>
       <ul>
         <li>
           已经运行
@@ -15,12 +15,13 @@
         </li>
         <li>
           客房总量
-          <span>1</span>
+          <!-- <span>{{data.houseCount}}</span> -->
+          <span>5</span>
           <span>间</span>
         </li>
         <li>
           设备总量
-          <span>10</span>
+          <span>{{data.deviceCount}}</span>
           <span>个</span>
         </li>
       </ul>
@@ -34,7 +35,7 @@
         <div :class="{'visited':index ==1}" @click="changeChild()">房间</div>
         <div :class="{'visited':index ==2}" @click="changeThird()">实时</div>
       </div>
-      <div @mouseenter="enter()" @mouseleave="leave()" v-show="index == 0" id="myChart"></div>
+      <div @mouseenter="enter()" @mouseleave="leave()" :class="{'current1':index == 0}" id="myChart"></div>
       <div
         @mouseenter="enter()"
         @mouseleave="leave()"
@@ -76,6 +77,7 @@ import newArr from "./time";
 import Bus from "./eventBus.js";
 import qs from "qs";
 import RealTime from "./realTime";
+import utils from './utils'
 var token = "RQsb3e69V1ZNeGNVeFhjM1JoUnprd1dsZDRTV0l5TVd3PQC3hhBsZ8ZoOUj5bO==";
 export default {
   components: {
@@ -94,7 +96,9 @@ export default {
       childList: [],
       timer: "",
       timer2: "",
-      list: []
+      list: [],
+      newHomes:[],
+      name:''
     };
   },
   computed: {
@@ -104,7 +108,8 @@ export default {
         openWatch: true,
         show1: true,
         limitMoveNum: 3,
-        name: ""
+        name: "",
+        sign:""
       };
     }
   },
@@ -116,6 +121,12 @@ export default {
       }, 0);
     }, 4000);
     this.leave()
+  },
+  mounted() {
+    Bus.$on('getHotelName',(name) =>{
+      this.name = name.replace('智慧酒店','')
+    })
+    this.sign = utils.getUrlKey('sign')
   },
   methods: {
     //根据标识获取酒店信息
@@ -195,12 +206,22 @@ export default {
                 return item.totalPower;
               });
             } else {
-              const newData = newArr[5];
-              for (var x in newData) {
-                for (var y in arr) {
-                  if (newData[x].date == arr[y].gmtCreate) {
-                    newData[x].homes.push(arr[y].deviceName)
-                    newData[x].power[x] = arr[y].power
+              let newData = newArr[5];
+              for (let x in newData) {
+                for (let y in arr) {
+                  newData[x].homes.push(arr[y].deviceName)
+                  newData[x].homes = Array.from(new Set(newData[x].homes))
+                  if(newData[x].date == arr[y].gmtCreate){
+                    newData[x].arr.push(arr[y])
+                  }
+                }
+              }
+              for(let x in newData){
+                for(let z in newData[x].homes){
+                  for(let y in newData[x].arr){
+                    if(newData[x].homes[z] == newData[x].arr[y].deviceName){
+                      newData[x].power[z] = newData[x].arr[y].power
+                    }
                   }
                 }
               }
@@ -212,6 +233,8 @@ export default {
               arr1.push(newData[0].power[0],newData[1].power[0],newData[2].power[0])
               arr2.push(newData[0].power[1],newData[1].power[1],newData[2].power[1])
               arr3.push(newData[0].power[2],newData[1].power[2],newData[2].power[2])
+              // home1.push(newData)
+              console.log(arr1,arr2,arr3,home)
               this.drawLine1(houseArr, arr1,arr2,arr3,home);
             }
           }
@@ -326,7 +349,7 @@ export default {
               // 点的颜色。
               color: "#FFF100"
             },
-            name: "客房数量",
+            name: "度数",
             symbolSize: 6,
             type: "line",
             data: arr
@@ -340,9 +363,8 @@ export default {
     },
     drawLine1(houseArr, arr1,arr2,arr3,home) {
       // 基于准备好的dom，初始化echarts实例
-      console.log(arr1,arr2,arr3)
       let myChart1 = this.$echarts.init(document.getElementById("myChart1"));
-  // console.log(newData[0].homes)
+  console.log(home)
       myChart1.setOption({
         tooltip: {},
         grid: {
@@ -519,6 +541,7 @@ export default {
         this.list = [];
         this.getHotelPowerWarnMsg();
         this.index++;
+        // console.log(this.index)
         if (this.index == 3) {
           this.index = 0;
         }
@@ -607,9 +630,10 @@ export default {
   color: #1ce6f4;
 }
 #myChart {
-  width: 100%;
+  width: 100%;/*no*/
   height: 80%; /*no*/
   position: relative;
+  visibility: hidden;
   /* left: 20px; */
 }
 #myChart1 {
@@ -639,6 +663,9 @@ export default {
 }
 .change_btn div:hover {
   cursor: pointer;
+}
+#myChart.current1 {
+  visibility: visible;
 }
 #myChart1.current {
   visibility: visible;

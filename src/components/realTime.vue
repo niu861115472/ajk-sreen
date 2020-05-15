@@ -59,10 +59,10 @@ export default {
     getRealTimeData() {
       this.$api
         .getRealTimeData({
-          DeviceID: "5be14b56690e761114e06f69"
+          DeviceID: "5b8374554c1d6e0df006c2d4"
         })
         .then(res => {
-          console.log(res.dataObject.Lines);
+          // console.log(res.dataObject.Lines);
           this.data = res.dataObject.Lines;
           var newArr = [];
           var newArr1 = [];
@@ -86,7 +86,7 @@ export default {
             newObj1.value = this.data[i].Power;
             if (newObj1.value / 220 < this.data[i].Max) {
               newObj1.itemStyle = { color: "#54e7a9" };
-              console.log(newObj1.value / 220);
+              // console.log(newObj1.value / 220);
             } else {
               newObj1.itemStyle = { color: "#ed393a" };
             }
@@ -105,7 +105,7 @@ export default {
             //   return item.value
             // })
             // console.log(name,value)
-            console.log(newArr,newArr1)
+            // console.log(newArr,newArr1)
             this.getPie(newArr,newArr1);
           }
         });
@@ -357,6 +357,9 @@ export default {
 </script>
 <style scoped>
 .real-time {
+  position: absolute;
+  left: 0;
+  top: 22px;
   width: 100%;
   height: 70%;
   margin-top: 5px;
